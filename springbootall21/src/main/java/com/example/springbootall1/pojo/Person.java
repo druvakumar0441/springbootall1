@@ -1,5 +1,8 @@
 package com.example.springbootall1.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,11 +17,12 @@ import lombok.Data;
 
 @Entity
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Person {
-
+	
+	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer pid;
 
     @NotNull(message = "Name is mandatory")
     private String pname;
@@ -40,16 +44,17 @@ public class Person {
     @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", message = "Invalid email address")
     private String pgmail;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_credentials_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_credentials_id", referencedColumnName = "uid")
+    @JsonManagedReference
     private UserCredentials userCredentials;
 
-	public Integer getId() {
-		return id;
+	public Integer getPid() {
+		return pid;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setPid(Integer id) {
+		this.pid = id;
 	}
 
 	public String getPname() {
@@ -107,7 +112,6 @@ public class Person {
 	public void setUserCredentials(UserCredentials userCredentials) {
 		this.userCredentials = userCredentials;
 	}
-    
     
 }
 

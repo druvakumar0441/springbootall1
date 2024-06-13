@@ -9,9 +9,10 @@ import com.example.springbootall1.pojo.Person;
 import com.example.springbootall1.service.PersonService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/persons")
+@RequestMapping("/api/person")
 public class PersonController {
 
     @Autowired
@@ -24,9 +25,9 @@ public class PersonController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> getPersonById(@PathVariable Integer id) {
-        return personService.getPersonById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        Optional<Person> optionalPerson = Optional.ofNullable(personService.getPersonById(id));
+        return optionalPerson.map(person -> ResponseEntity.ok().body(person))
+                             .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping

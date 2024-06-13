@@ -3,10 +3,11 @@ package com.example.springbootall1.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.springbootall1.exception.ResourceNotFoundException;
 import com.example.springbootall1.pojo.UserCredentials;
 import com.example.springbootall1.repo.UserCredentialsRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserCredentialsService {
@@ -14,10 +15,14 @@ public class UserCredentialsService {
     @Autowired
     private UserCredentialsRepository userCredentialsRepository;
 
-    public Optional<UserCredentials> getUserCredentialsById(Integer id) {
-        return userCredentialsRepository.findById(id);
+    public UserCredentials getUserCredentialsById(Integer id) {
+        return userCredentialsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("UserCredentials not found with id: " + id));
     }
-
+    
+    public List<UserCredentials> getAllUserCredentials() {
+        return userCredentialsRepository.findAll();
+    }
     public UserCredentials createUserCredentials(UserCredentials userCredentials) {
         return userCredentialsRepository.save(userCredentials);
     }
@@ -25,7 +30,7 @@ public class UserCredentialsService {
     public UserCredentials updateUserCredentials(Integer id, UserCredentials updatedUserCredentials) {
         return userCredentialsRepository.findById(id)
             .map(existingUserCredentials -> {
-                updatedUserCredentials.setId(id);
+                updatedUserCredentials.setUid(id);
                 return userCredentialsRepository.save(updatedUserCredentials);
             })
             .orElseThrow(() -> new RuntimeException("UserCredentials not found with id: " + id));
