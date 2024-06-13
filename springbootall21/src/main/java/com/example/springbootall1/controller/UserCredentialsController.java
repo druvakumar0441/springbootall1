@@ -1,9 +1,13 @@
 package com.example.springbootall1.controller;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.springbootall1.pojo.Person;
 import com.example.springbootall1.pojo.UserCredentials;
 import com.example.springbootall1.service.UserCredentialsService;
 
@@ -15,12 +19,18 @@ public class UserCredentialsController {
     private UserCredentialsService userCredentialsService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserCredentials> getUserCredentialsById(@PathVariable Integer id) {
-        return userCredentialsService.getUserCredentialsById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Optional<UserCredentials>> getPersonById(@PathVariable Integer id) {
+        Optional<Optional<UserCredentials>> optionalPerson = Optional.ofNullable(Optional.ofNullable(userCredentialsService.getUserCredentialsById(id)));
+        return optionalPerson.map(person -> ResponseEntity.ok().body(person))
+                             .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserCredentials>> getAllUserCredentials() {
+        List<UserCredentials> userCredentialsList = userCredentialsService.getAllUserCredentials();
+        return ResponseEntity.ok().body(userCredentialsList);
+    }
+    
     @PostMapping
     public UserCredentials createUserCredentials(@RequestBody UserCredentials userCredentials) {
         return userCredentialsService.createUserCredentials(userCredentials);

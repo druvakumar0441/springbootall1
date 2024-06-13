@@ -4,6 +4,7 @@ package com.example.springbootall1.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.springbootall1.exception.ResourceNotFoundException;
 import com.example.springbootall1.pojo.Person;
 import com.example.springbootall1.repo.PersonRepository;
 
@@ -20,8 +21,9 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Optional<Person> getPersonById(Integer id) {
-        return personRepository.findById(id);
+    public Person getPersonById(Integer id) {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Person not found with id: " + id));
     }
 
     public Person createPerson(Person person) {
@@ -31,7 +33,7 @@ public class PersonService {
     public Person updatePerson(Integer id, Person updatedPerson) {
         return personRepository.findById(id)
             .map(existingPerson -> {
-                updatedPerson.setId(id);
+                updatedPerson.setPid(id);
                 return personRepository.save(updatedPerson);
             })
             .orElseThrow(() -> new RuntimeException("Person not found with id: " + id));

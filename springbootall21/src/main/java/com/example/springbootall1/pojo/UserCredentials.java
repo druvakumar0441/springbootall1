@@ -1,10 +1,11 @@
 package com.example.springbootall1.pojo;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
@@ -12,27 +13,28 @@ import lombok.Data;
 
 @Entity
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserCredentials {
 
 		@Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Integer id;
+	    private Integer uid;
 
 	    @NotNull(message = "Username is mandatory")
 	    private String username;
 
 	    @NotNull(message = "Password is mandatory")
-	    private String password;
+	    private String userpassword;
 
-	    @OneToOne(mappedBy = "userCredentials")
+	    @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL)
+	    @JsonBackReference
 	    private Person person;
-
-		public Integer getId() {
-			return id;
+	    
+		public Integer getUid() {
+			return uid;
 		}
 
-		public void setId(Integer id) {
-			this.id = id;
+		public void setUid(Integer id) {
+			this.uid = id;
 		}
 
 		public String getUsername() {
@@ -44,11 +46,11 @@ public class UserCredentials {
 		}
 
 		public String getPassword() {
-			return password;
+			return userpassword;
 		}
 
 		public void setPassword(String password) {
-			this.password = password;
+			this.userpassword = password;
 		}
 
 		public Person getPerson() {
