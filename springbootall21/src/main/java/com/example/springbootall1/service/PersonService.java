@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.springbootall1.exception.ResourceNotFoundException;
 import com.example.springbootall1.pojo.Person;
+import com.example.springbootall1.pojo.UserCredentials;
 import com.example.springbootall1.repo.PersonRepository;
+import com.example.springbootall1.repo.UserCredentialsRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,10 @@ public class PersonService {
 
     @Autowired
     private PersonRepository personRepository;
+    
+    @Autowired
+    private UserCredentialsService userCredentialsService;
+
 
     public List<Person> getAllPersons() {
         return personRepository.findAll();
@@ -27,7 +33,14 @@ public class PersonService {
     }
 
     public Person createPerson(Person person) {
-        return personRepository.save(person);
+    	 if (person.getUserCredentials() != null) {
+             // Save UserCredentials first to ensure it has an assigned UID
+             UserCredentials savedUserCredentials = userCredentialsService.createUserCredentials(person.getUserCredentials());
+             // Set the saved UserCredentials in Person
+             person.setUserCredentials(savedUserCredentials);
+         }
+         // Save Person
+         return personRepository.save(person);
     }
 
     public Person updatePerson(Integer id, Person updatedPerson) {

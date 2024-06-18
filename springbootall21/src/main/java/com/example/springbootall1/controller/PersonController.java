@@ -31,8 +31,13 @@ public class PersonController {
     }
 
     @PostMapping
-    public Person createPerson(@RequestBody Person person) {
-        return personService.createPerson(person);
+    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+        // Set the Person instance in UserCredentials
+        if (person.getUserCredentials() != null) {
+            person.getUserCredentials().setPerson(person);
+        }
+        Person savedPerson = personService.createPerson(person);
+        return ResponseEntity.ok().body(savedPerson);
     }
 
     @PutMapping("/{id}")

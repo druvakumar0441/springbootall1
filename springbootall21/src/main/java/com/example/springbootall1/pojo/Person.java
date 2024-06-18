@@ -22,6 +22,7 @@ public class Person {
 	
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pid;
 
     @NotNull(message = "Name is mandatory")

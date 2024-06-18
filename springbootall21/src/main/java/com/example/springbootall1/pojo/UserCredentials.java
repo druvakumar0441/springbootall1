@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +20,7 @@ import lombok.Data;
 public class UserCredentials {
 
 		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Integer uid;
 
 	    @NotNull(message = "Username is mandatory")
@@ -25,7 +29,7 @@ public class UserCredentials {
 	    @NotNull(message = "Password is mandatory")
 	    private String userpassword;
 
-	    @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL)
+	    @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	    @JsonBackReference
 	    private Person person;
 	    
